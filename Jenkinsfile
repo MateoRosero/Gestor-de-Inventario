@@ -43,7 +43,6 @@ pipeline {
       post {
         always {
           junit allowEmptyResults: true, testResults: 'reports/junit.xml'
-          publishCoverage adapters: [jacocoAdapter('reports/coverage.xml')], sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
           archiveArtifacts artifacts: 'db.sqlite3, reports/**', fingerprint: true, onlyIfSuccessful: false
         }
       }
