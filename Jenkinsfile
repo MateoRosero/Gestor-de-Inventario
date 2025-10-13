@@ -5,6 +5,8 @@ pipeline {
     VENV_DIR = '.venv'
     PIP_DISABLE_PIP_VERSION_CHECK = '1'
     PYTHONIOENCODING = 'utf-8'
+    // 👉 Ajusta si usas otra versión/ruta
+    PYTHON_EXE = 'C:\\Users\\Alienware\\AppData\\Local\\Programs\\Python\\Python311\\python.exe'
   }
   stages {
     stage('Build & Migrate') {
@@ -12,16 +14,17 @@ pipeline {
         checkout scm
         bat """
           if not exist %VENV_DIR% (
-            python -m venv %VENV_DIR%
+            "%PYTHON_EXE%" -m venv %VENV_DIR%
           )
           call %VENV_DIR%\\Scripts\\activate
-          python -m pip install --upgrade pip
+          "%PYTHON_EXE%" -m pip install --upgrade pip
           if exist requirements.txt (
             pip install -r requirements.txt
           ) else (
             pip install Django pytest pytest-django pytest-cov
           )
-          python manage.py migrate --noinput
+          REM Si manage.py está en subcarpeta, haz: cd backend (por ejemplo) ANTES de la siguiente línea
+          "%PYTHON_EXE%" manage.py migrate --noinput
         """
       }
     }
@@ -31,7 +34,8 @@ pipeline {
         bat """
           call %VENV_DIR%\\Scripts\\activate
           if not exist reports mkdir reports
-          set DJANGO_SETTINGS_MODULE=gestor_inventario.settings_test
+          REM Pytest usará el DJANGO_SETTINGS_MODULE de pytest.ini
+          REM Si tu manage.py está en subcarpeta, haz: cd backend ANTES de pytest
           pytest --junitxml=reports\\junit.xml --cov=. --cov-report=xml:reports\\coverage.xml
         """
       }
@@ -46,4 +50,3 @@ pipeline {
   }
   post { always { echo 'CI listo.' } }
 }
-
