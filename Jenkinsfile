@@ -39,13 +39,5 @@ pipeline {
           pytest --ds=%DJANGO_SETTINGS_MODULE% --junitxml=reports\\junit.xml --cov=. --cov-report=xml:reports\\coverage.xml
         """
       }
-      post {
-        always {
-          junit allowEmptyResults: true, testResults: 'reports/junit.xml'
-          archiveArtifacts artifacts: 'db.sqlite3, reports/**', fingerprint: true, onlyIfSuccessful: false
-        }
-      }
     }
-  }
-  post { always { echo 'CI listo.' } }
 }
