@@ -4,12 +4,6 @@
 
 ---
 
-## 📸 Capturas de pantalla
-
-> *(Agrega aquí imágenes si deseas mostrar visualmente el dashboard, formularios, etc.)*
-
----
-
 ## 🚀 Características Principales
 
 - 🔐 Autenticación de usuarios (registro, login y logout personalizados)
