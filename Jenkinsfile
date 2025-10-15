@@ -6,7 +6,6 @@ pipeline {
     PIP_DISABLE_PIP_VERSION_CHECK = '1'
     PYTHONIOENCODING = 'utf-8'
     PY311 = 'C:\\Users\\Alienware\\AppData\\Local\\Programs\\Python\\Python311\\python.exe'
-    // 👇 Fuerza el uso de settings_ci.py que usa SQLite en lugar de PostgreSQL
     DJANGO_SETTINGS_MODULE = 'gestor_inventario.settings_ci'
   }
   stages {
@@ -25,18 +24,18 @@ pipeline {
           ) else (
             python -m pip install Django pytest pytest-django pytest-cov
           )
-          rem 👉 Ejecuta migrate usando settings_ci.py (SQLite)
+          rem  Ejecuta migrate usando settings_ci.py (SQLite)
           python manage.py migrate --noinput --settings=%DJANGO_SETTINGS_MODULE%
         """
       }
     }
 
-    stage('Tests & Reports') {
+    stage('Tests') {
       steps {
         bat """
           call %VENV_DIR%\\Scripts\\activate
           if not exist reports mkdir reports
-          rem 👉 pytest usa settings_ci.py (SQLite)
+          rem  pytest usa settings_ci.py (SQLite)
           pytest --ds=%DJANGO_SETTINGS_MODULE% --junitxml=reports\\junit.xml --cov=. --cov-report=xml:reports\\coverage.xml
         """
       }
